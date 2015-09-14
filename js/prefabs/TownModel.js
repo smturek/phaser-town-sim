@@ -4,8 +4,8 @@ HTown.TownModel = function(coefs, initialStats, buildings) {
 
     this.coefs = {};
     this.coefs.populationGrowth = coefs.populationGrowth || 1.02;
-    this.coefs.populationGrowth = coefs.foodConsumption || 1;
-    this.coefs.populationGrowth = coefs.productivityPerPerson || 0.5;
+    this.coefs.foodConsumption = coefs.foodConsumption || 1;
+    this.coefs.productivityPerPerson = coefs.productivityPerPerson || 0.5;
 
     this.stats = {};
     this.stats.population = initialStats.population;
@@ -13,6 +13,8 @@ HTown.TownModel = function(coefs, initialStats, buildings) {
     this.stats.money = initialStats.money;
 
     this.buildings = buildings;
+
+    console.log("Initial Food: " + this.stats.food)
 
 };
 
@@ -35,6 +37,8 @@ HTown.TownModel.prototype.step = function() {
 
     //industrial output
     this.stats.money += Math.min(this.stats.population, this.stats.jobs) * this.coefs.productivityPerPerson;
+
+    console.log(this.stats);
 };
 
 HTown.TownModel.prototype.updateBuildingProduction = function() {
