@@ -4,6 +4,7 @@ HTown.TownModel = function(coefs, initialStats, buildings) {
 
     this.coefs = {};
     this.coefs.populationGrowth = coefs.populationGrowth || 1.02;
+    this.coefs.populationGrowth = coefs.foodConsumption || 1;
 
     this.stats = {};
     this.stats.population = initialStats.population;
@@ -20,7 +21,16 @@ HTown.TownModel.prototype.step = function() {
     this.stats.population = this.stats.population * this.coefs.populationGrowth;
 
     //population cannot be greater that housing allows
-    this.stats.population = Math.min(this.stats.population, this.stats.housing)
+    this.stats.population = Math.min(this.stats.population, this.stats.housing);
+
+    //update food
+    this.stats.food -= this.stats.population * this.coefs.foodConsumption;
+
+    //if food becomes negative, population goes down
+    if(this.stats.food < 0) {
+        this.stats.population += this.stats.food / this.coefs.foodConsumption;
+        this.stats.food = 0;
+    }
 };
 
 HTown.TownModel.prototype.updateBuildingProduction = function() {
@@ -29,6 +39,10 @@ HTown.TownModel.prototype.updateBuildingProduction = function() {
     this.buildings.forEach(function(building){
         if(building.housing) {
             this.stats.housing += building.housing;
+        }
+
+        if(building.food) {
+            this.stats.food += building.food;
         }
     }, this);
 };
