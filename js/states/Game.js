@@ -6,6 +6,8 @@ HTown.GameState = {
         this.STEP = 2;
 
         this.game.physics.arcade.gravity.y = 0;
+
+        this.game.input.maxPointers = 1;
     },
     create: function() {
         //create grass background
@@ -32,7 +34,34 @@ HTown.GameState = {
         this.initGui();
     },
     update: function() {
+        if(!this.isDraggingMapBlocked) {
+            //start dragging map
+            if(!this.isDraggingMap) {
+                if(this.game.input.activePointer.isDown) {
+                    this.isDraggingMap = true;
+                    this.startDragPoint = {};
+                    this.startDragPoint.x = this.game.input.activePointer.x;
+                    this.startDragPoint.y = this.game.input.activePointer.y;
+                }
+            }
+            else {
+                this.endDragPoint = {};
+                this.endDragPoint.x = this.game.input.activePointer.x;
+                this.endDragPoint.y = this.game.input.activePointer.y;
 
+                this.game.camera.x += this.startDragPoint.x - this.endDragPoint.x;
+                this.game.camera.y += this.startDragPoint.y - this.endDragPoint.y;
+
+                //after update, take new starting point so the camera starts again later
+                this.startDragPoint.x = this.game.input.activePointer.x;
+                this.startDragPoint.y = this.game.input.activePointer.y;
+
+                //stop dragging map when you release active pointer
+                if(this.game.input.activePointer.isUp) {
+                    this.isDraggingMap = false;
+                }
+            }
+        }
     },
     simulationStep: function() {
         this.town.step();
