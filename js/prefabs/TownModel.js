@@ -14,6 +14,8 @@ HTown.TownModel = function(coefs, initialStats, buildings) {
 
     this.buildings = buildings;
 
+    this.updateBuildingProduction();
+
 };
 
 HTown.TownModel.prototype.step = function() {
