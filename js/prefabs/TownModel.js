@@ -14,8 +14,6 @@ HTown.TownModel = function(coefs, initialStats, buildings) {
 
     this.buildings = buildings;
 
-    console.log("Initial Food: " + this.stats.food)
-
 };
 
 HTown.TownModel.prototype.step = function() {

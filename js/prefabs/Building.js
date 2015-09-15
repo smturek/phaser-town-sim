@@ -7,7 +7,9 @@ HTown.Building = function(state, x, y, data) {
     this.state = state;
 
     //init stats
-
+    this.food = data.food;
+    this.jobs = data.jobs;
+    this.housing = data.housing;
 
     this.anchor.setTo(0.5);
 
