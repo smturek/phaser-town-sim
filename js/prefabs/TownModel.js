@@ -37,8 +37,6 @@ HTown.TownModel.prototype.step = function() {
 
     //industrial output
     this.stats.money += Math.min(this.stats.population, this.stats.jobs) * this.coefs.productivityPerPerson;
-
-    console.log(this.stats);
 };
 
 HTown.TownModel.prototype.updateBuildingProduction = function() {

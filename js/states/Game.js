@@ -119,6 +119,21 @@ HTown.GameState = {
 
     },
     clickBuildBtn: function(button) {
-        console.log(button);
+        this.clearSelection();
+
+        //check that user can afford building
+        if(this.town.stats.money >= button.buildingData.cost) {
+            button.alpha = 0.5;
+            this.selectedBuilding = button.buildingData;
+            this.isBuildingBtnActive = true;
+        }
+    },
+    clearSelection: function() {
+        this.isDraggingMapBlocked = false;
+        this.isDraggingMap = false;
+        this.isBuildingBtnActive = false;
+        this.selectedBuilding = null;
+
+        this.buttons.setAll('alpha', 1);
     }
 };
