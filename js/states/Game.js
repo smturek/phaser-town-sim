@@ -14,7 +14,7 @@ HTown.GameState = {
         this.background = this.add.tileSprite(0, 0, 1200, 800, 'grass');
         this.game.world.setBounds(0, 0, 1200, 800);
 
-        this.buildings = this.game.add.group();
+        this.buildings = this.add.group();
 
         var house = new HTown.Building(this, 100, 100, {asset: 'house', housing: 100});
         this.buildings.add(house);
@@ -95,6 +95,20 @@ HTown.GameState = {
         this.jobsLabel = this.add.text(315, 15, '0', style);
         this.jobsLabel.fixedToCamera = true;
 
+        //button data
+        this.buttonData = JSON.parse(this.game.cache.getText('buttonData'));
+
+        this.buttons = this.add.group();
+
+        var button;
+        this.buttonData.forEach(function(element, index) {
+            button = new Phaser.Button(this.game, this.game.width - 60 - 60 * index, this.game.height - 60, element.btnAsset, this.clickBuildBtn, this);
+            button.fixedToCamera = true;
+            this.buttons.add(button);
+
+            button.buildingData = element;
+        }, this);
+
         this.refreshStats();
     },
     refreshStats: function() {
@@ -103,5 +117,8 @@ HTown.GameState = {
         this.populationLabel.text = Math.round(this.town.stats.population) + "/" + Math.round(this.town.stats.housing);
         this.jobsLabel.text = Math.round(this.town.stats.jobs);
 
+    },
+    clickBuildBtn: function(button) {
+        console.log(button);
     }
 };
