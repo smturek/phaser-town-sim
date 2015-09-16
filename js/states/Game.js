@@ -62,6 +62,39 @@ HTown.GameState = {
                 }
             }
         }
+
+        if(this.isBuildingBtnActive && this.game.input.activePointer.isDown) {
+            this.isDraggingMapBlocked = true;
+
+            //start dragging the shadow building
+            this.isDraggingBuilding = true;
+        }
+
+        if(this.isDraggingBuilding) {
+            var pointerWorldX = this.game.input.activePointer.worldX;
+            var pointerWorldY = this.game.input.activePointer.worldY;
+
+            if(!this.shadowBuilding || !this.shadowBuilding.alive) {
+                this.shadowBuilding = this.add.sprite(pointerWorldX, pointerWorldX, this.selectedBuilding.asset);
+                this.shadowBuilding.alpha = 0.5;
+                this.shadowBuilding.anchor.setTo(0.5);
+
+                this.game.physics.arcade.enable(this.shadowBuilding);
+            }
+
+            this.shadowBuilding.x = pointerWorldX;
+            this.shadowBuilding.y = pointerWorldY;
+        }
+
+        if(this.isDraggingBuilding && this.game.input.activePointer.isUp) {
+
+            if(this.canBuild()) {
+                this.town.stats.money -= this.selectedBuilding.cost;
+                this.createBuilding(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, this.selectedBuilding);
+            }
+
+            this.clearSelection();
+        }
     },
     simulationStep: function() {
         this.town.step();
@@ -132,8 +165,24 @@ HTown.GameState = {
         this.isDraggingMapBlocked = false;
         this.isDraggingMap = false;
         this.isBuildingBtnActive = false;
+        this.isDraggingBuilding = false;
         this.selectedBuilding = null;
 
+        if(this.shadowBuilding) {
+            this.shadowBuilding.kill();
+        }
+
+        this.refreshStats();
+
         this.buttons.setAll('alpha', 1);
+    },
+    createBuilding: function(x, y, data) {
+        var newBuilding = new HTown.Building(this, x, y, data);
+        this.buildings.add(newBuilding);
+    },
+    canBuild: function() {
+        var isOverlappingBuildings = this.game.physics.arcade.overlap(this.shadowBuilding, this.buildings);
+
+        return !isOverlappingBuildings;
     }
 };
